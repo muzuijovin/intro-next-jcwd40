@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { NavbarSection } from "@/components/navbar";
 import { SidebarSection } from "@/components/sidebar";
 import { useAuthStore } from "@/stores/useAuthStore";
@@ -6,19 +6,20 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
-  const {objectId, setUserAuthStore}= useAuthStore();
+  const { objectId, setUserAuthStore } = useAuthStore();
 
-   // Session User (Ketika User Pernah Login)
+  // Session User (Ketika User Pernah Login)
   useQuery({
     queryFn: async () => {
       const res = await axios.post(
-        'https://api.backendless.com/80900C75-16BB-41B9-A507-BFBEB18800DB/961C60EC-92F0-449A-9F6C-16488E55BA91/users/login',
+        "https://api.backendless.com/80900C75-16BB-41B9-A507-BFBEB18800DB/961C60EC-92F0-449A-9F6C-16488E55BA91/users/login",
         { objectId },
       );
-      setUserAuthStore(res?.data?.username, res?.data?.email, res?.data?.objectId);
-      return res?.data;
+      const data = res?.data as any;
+      setUserAuthStore(data?.username, data?.email, data?.objectId);
+      return data;
     },
-    queryKey: ['session-user', objectId],
+    queryKey: ["session-user", objectId],
     enabled: !!objectId,
   });
 

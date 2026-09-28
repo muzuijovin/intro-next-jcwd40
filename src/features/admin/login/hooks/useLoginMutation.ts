@@ -1,6 +1,5 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
-import { isAxiosError } from "axios";
 import { toast } from "react-toastify";
 import { LoginSchema } from "../../validation/loginSchema";
 import { useRouter } from "next/navigation";
@@ -16,15 +15,17 @@ export function UseLoginMutation(getValues: () => LoginSchema) {
       const { email, password } = getValues();
       return await loginApi({ email, password });
     },
-    onSuccess(res) {
+    onSuccess(res: any) {
       toast.success("autentification user successfull");
-      setUserAuthStore(res?.data?.username, res?.data?.email, res?.data?.objectId)
+      setUserAuthStore(
+        res?.data?.username,
+        res?.data?.email,
+        res?.data?.objectId,
+      );
       router.push("/admin/book-management");
     },
-    onError(error) {
-      if (isAxiosError(error)) {
-        toast.error(error?.response?.data?.message);
-      }
+    onError(error: any) {
+      toast.error(error?.response?.data?.message || "Terjadi kesalahan");
     },
   });
 
